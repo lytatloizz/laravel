@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use Hash;
-use Session;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,6 +16,8 @@ class CustomAuthController extends Controller
 
     public function customLogin(Request $request)
     {
+        $email = $request->get('email');
+        $data = $request->all();
         $request->validate([
             'email' => 'required',
             'password' => 'required',
@@ -38,9 +40,12 @@ class CustomAuthController extends Controller
     public function customRegistration(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'username' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'password' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required|min:6',
         ]);
 
         $data = $request->all();
@@ -52,8 +57,11 @@ class CustomAuthController extends Controller
     public function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
+            'username' => $data['username'],
             'email' => $data['email'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password'])
         ]);
     }
